@@ -3,8 +3,10 @@
 namespace App\Factory;
 
 use App\DataManager\DatabaseManager;
+use App\DataManager\DatabaseManagerInterface;
 use App\DataManager\DataManagerInterface;
 use App\DataManager\XmlManager;
+use App\DataManager\XmlManagerInterface;
 use App\Repository\UsersRepository;
 use Doctrine\Persistence\ObjectManager;
 
@@ -14,18 +16,20 @@ class UsersDataSourceFactory implements UsersDataSourceFactoryInterface
     public const DATABASE = "database";
     public const XML = "xml";
 
-    protected $usersRepository;
+    /**
+     * @var XmlManager
+     */
+    protected $xmlManager;
 
-    protected $entityManager;
+    /**
+     * @var DatabaseManager
+     */
+    protected $databaseManager;
 
-    function __construct(UsersRepository $usersRepository)
+    function __construct(XmlManagerInterface $xmlManager, DatabaseManagerInterface $databaseManager)
     {
-        $this->usersRepository = $usersRepository;
-    }
-
-    public function setEntityManager(ObjectManager $em)
-    {
-        $this->entityManager = $em;
+        $this->xmlManager = $xmlManager;
+        $this->databaseManager = $databaseManager;
     }
 
     public function getDataManager(string $dataSource = self::DATABASE): DataManagerInterface
@@ -33,11 +37,11 @@ class UsersDataSourceFactory implements UsersDataSourceFactoryInterface
         switch ($dataSource)
         {
             case self::XML:
-                return new XmlManager();
+                return $this->xmlManager;
                 break;
             case self::DATABASE:
             default:
-                return new DatabaseManager($this->usersRepository, $this->entityManager);
+                return $this->databaseManager;
                 break;
         }
     }

@@ -8,7 +8,7 @@ use App\DTO\UserDto;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-class DatabaseManager extends DataManager
+class DatabaseManager extends DataManager implements DatabaseManagerInterface
 {
 
     protected $usersRepository;

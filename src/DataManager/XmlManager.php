@@ -4,7 +4,7 @@ namespace App\DataManager;
 
 use App\DTO\UserDto;
 
-class XmlManager extends DataManager
+class XmlManager extends DataManager implements XmlManagerInterface
 {
 
     public const PATH_TO_FILE = '../var/users.xml';

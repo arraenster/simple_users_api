@@ -60,7 +60,6 @@ class UsersController extends AbstractController
                 0 => ['source' => 'Allowed data source is xml or database.']]], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $this->usersDataSourceFactory->setEntityManager($this->getDoctrine()->getManager());
         $dataSource = $request->query->get('source');
 
         $dataManager = $this->usersDataSourceFactory->getDataManager($dataSource);
@@ -98,8 +97,6 @@ class UsersController extends AbstractController
         }
 
         $dataSource = $request->query->get('source');
-
-        $this->usersDataSourceFactory->setEntityManager($this->getDoctrine()->getManager());
 
         $userDto = new UserDto();
         $userDto->setLogin($request->request->get('login'));
