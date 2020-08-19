@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Factory\UsersDataSourceFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,11 +11,27 @@ class UsersController extends AbstractController
 {
 
     /**
-     * @Route("/api/v1/users", methods={"GET"})
+     * @var UsersDataSourceFactoryInterface
      */
-    public function getList(): JsonResponse
+    protected $usersDataSourceFactory;
+
+    function __construct(UsersDataSourceFactoryInterface $usersDataSourceFactory)
     {
-        return new JsonResponse(['status' => 'OK', 'data' => []], JsonResponse::HTTP_OK);
+        $this->usersDataSourceFactory = $usersDataSourceFactory;
+    }
+
+    /**
+     * @Route("/api/v1/users/{page<\d+>?1}", methods={"GET"})
+     * 
+     * @param int $page
+     * @return JsonResponse
+     */
+    public function getList(int $page): JsonResponse
+    {
+        $dataManager = $this->usersDataSourceFactory->getDataManager();
+        $response = $dataManager->getList($page);
+;
+        return new JsonResponse(['status' => 'OK', 'data' => $response], JsonResponse::HTTP_OK);
     }
 
     /**
