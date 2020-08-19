@@ -3,15 +3,16 @@
 namespace App\DataManager;
 
 use App\DTO\UserDto;
-use App\Entity\Users;
 
-class XmlManager implements DataManagerInterface
+class XmlManager extends DataManager
 {
-
-    protected const AMOUNT_PER_PAGE = 1;
 
     public const PATH_TO_FILE = '../var/users.xml';
 
+    /**
+     * @param int $currentPage
+     * @return array
+     */
     public function getList(int $currentPage = 1): array
     {
         if (file_exists(self::PATH_TO_FILE) === false) {
@@ -55,6 +56,10 @@ class XmlManager implements DataManagerInterface
         ];
     }
 
+    /**
+     * @param UserDto $userDto
+     * @return UserDto
+     */
     public function create(UserDto $userDto): UserDto
     {
 

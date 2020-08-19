@@ -8,10 +8,8 @@ use App\DTO\UserDto;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-class DatabaseManager implements DataManagerInterface
+class DatabaseManager extends DataManager
 {
-
-    protected const AMOUNT_PER_PAGE = 1;
 
     protected $usersRepository;
 
