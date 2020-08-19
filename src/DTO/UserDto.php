@@ -157,9 +157,21 @@ class UserDto
         $this->status = $status;
     }
 
+    public function toXml(): string
+    {
+        return '<user>
+<login>'.$this->login.'</login>
+<password>'.$this->password.'</password>
+<createdDate>'.$this->createdDate.'</createdDate>
+<updatedDate>'.$this->updatedDate.'</updatedDate>
+<role>'.$this->role.'</role>
+<status>'.$this->status.'</status>
+</user>';
+    }
+
     public function toArray(): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'login' => $this->login,
             'createdDate' => $this->createdDate,
@@ -167,5 +179,11 @@ class UserDto
             'role' => $this->role,
             'status' => $this->status,
         ];
+
+        if (empty($data['id'])) {
+            unset($data['id']);
+        }
+
+        return $data;
     }
 }

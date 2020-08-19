@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\UserDto;
 use App\Entity\Users;
+use App\Factory\UsersDataSourceFactory;
 use App\Factory\UsersDataSourceFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,9 +32,23 @@ class UsersController extends AbstractController
      * @param int $page
      * @return JsonResponse
      */
-    public function getList(int $page): JsonResponse
+    public function getList(int $page, Request $request): JsonResponse
     {
-        $dataManager = $this->usersDataSourceFactory->getDataManager();
+        if (!in_array(
+            $request->query->get('source'),
+            [
+                UsersDataSourceFactory::XML,
+                UsersDataSourceFactory::DATABASE
+            ]
+        )) {
+            return new JsonResponse(['status' => JsonResponse::HTTP_BAD_REQUEST, 'errors' => [
+                0 => ['source' => 'Allowed data source is xml or database.']]], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $this->usersDataSourceFactory->setEntityManager($this->getDoctrine()->getManager());
+        $dataSource = $request->query->get('source');
+
+        $dataManager = $this->usersDataSourceFactory->getDataManager($dataSource);
         $response = $dataManager->getList($page);
 ;
         return new JsonResponse(['status' => JsonResponse::HTTP_OK, 'data' => $response], JsonResponse::HTTP_OK);
@@ -44,6 +59,19 @@ class UsersController extends AbstractController
      */
     public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
+
+        if (!in_array(
+            $request->query->get('source'),
+            [
+                UsersDataSourceFactory::XML,
+                UsersDataSourceFactory::DATABASE
+            ]
+        )) {
+            return new JsonResponse(['status' => JsonResponse::HTTP_BAD_REQUEST, 'errors' => [
+                'source' => 'Allowed data source is xml or database.']], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $dataSource = $request->query->get('source');
 
         $this->usersDataSourceFactory->setEntityManager($this->getDoctrine()->getManager());
 
@@ -69,7 +97,7 @@ class UsersController extends AbstractController
             return new JsonResponse(['status' => JsonResponse::HTTP_BAD_REQUEST, 'errors' => $parsedErrors], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $dataManager = $this->usersDataSourceFactory->getDataManager();
+        $dataManager = $this->usersDataSourceFactory->getDataManager($dataSource);
         $user = $dataManager->create($userDto);
 
         return new JsonResponse(['status' => JsonResponse::HTTP_CREATED, 'data' => $user->toArray()], JsonResponse::HTTP_CREATED);

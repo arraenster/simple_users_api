@@ -43,7 +43,7 @@ class DatabaseManager implements DataManagerInterface
             ->setFirstResult(self::AMOUNT_PER_PAGE * ($currentPage-1))
             ->setMaxResults(self::AMOUNT_PER_PAGE);
 
-        $userList = [];
+        $usersList = [];
         foreach ($paginator as $user) {
             /** @var Users $user */
             $userDto = new UserDto();
@@ -54,11 +54,11 @@ class DatabaseManager implements DataManagerInterface
             $userDto->setRole($user->getRole());
             $userDto->setStatus($user->getStatus());
 
-            $userList[] = $userDto->toArray();
+            $usersList[] = $userDto->toArray();
         }
 
         return [
-            'users' => $userList,
+            'users' => $usersList,
             'currentPage' => $currentPage,
             'totalPages' => $totalPages
         ];
