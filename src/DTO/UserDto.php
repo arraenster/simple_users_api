@@ -2,18 +2,47 @@
 
 namespace App\DTO;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class UserDto
 {
+
     protected $id;
 
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     */
     protected $login;
 
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     */
+    protected $password;
+
+    /**
+     * @Assert\NotBlank
+     * @Assert\DateTime
+     */
     protected $createdDate;
 
+    /**
+     * @Assert\NotBlank
+     * @Assert\DateTime
+     */
     protected $updatedDate;
 
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type(type="int")
+     */
     protected $role;
 
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type(type="int")
+     */
     protected $status;
 
     /**
@@ -46,6 +75,22 @@ class UserDto
     public function setLogin($login): void
     {
         $this->login = $login;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password): void
+    {
+        $this->password = $password;
     }
 
     /**
@@ -114,6 +159,7 @@ class UserDto
 
     public function toArray(): array
     {
+        unset($this->password);
         return (array) $this;
     }
 }
