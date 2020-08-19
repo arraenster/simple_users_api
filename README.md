@@ -52,4 +52,8 @@ curl --location --request POST 'http://127.0.0.1:8000/api/v1/users?source=xml' \
 
 Switching between data sources is possible with optional query parameter `source` = (`xml`,`database`)
 
+### Testing
+At the moment implemented some unit tests to test get list of users endpoint:  
+```php ./vendor/bin/phpunit```
+
 @[Vladyslav Semerenko](mailto:vladyslav.semerenko@gmail.com)
