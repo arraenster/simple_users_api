@@ -7,39 +7,48 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserDto
 {
 
+    /**
+     * @var int
+     */
     protected $id;
 
     /**
+     * @var string
      * @Assert\NotBlank
      * @Assert\Type(type="string")
      */
     protected $login;
 
     /**
+     * @var string
      * @Assert\NotBlank
      * @Assert\Type(type="string")
      */
     protected $password;
 
     /**
+     * @var string
      * @Assert\NotBlank
      * @Assert\DateTime
      */
     protected $createdDate;
 
     /**
+     * @var string
      * @Assert\NotBlank
      * @Assert\DateTime
      */
     protected $updatedDate;
 
     /**
+     * @var integer
      * @Assert\NotBlank
      * @Assert\Type(type="int")
      */
     protected $role;
 
     /**
+     * @var integer
      * @Assert\NotBlank
      * @Assert\Type(type="int")
      */

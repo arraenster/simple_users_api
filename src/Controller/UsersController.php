@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ConstraintViolation;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 class UsersController extends AbstractController
 {
@@ -28,7 +30,20 @@ class UsersController extends AbstractController
 
     /**
      * @Route("/api/v1/users/{page<\d+>?1}", methods={"GET"})
-     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns list of users",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=UserDto::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="source",
+     *     in="query",
+     *     type="string",
+     *     description="Switcher for data source (xml, database)"
+     * )
      * @param int $page
      * @return JsonResponse
      */
@@ -56,6 +71,17 @@ class UsersController extends AbstractController
 
     /**
      * @Route("/api/v1/users", methods={"POST"})
+     * @SWG\Response(
+     *     response=201,
+     *     description="Creates one user",
+     *     @Model(type=UserDto::class)
+     * )
+     * @SWG\Parameter(
+     *     name="source",
+     *     in="query",
+     *     type="string",
+     *     description="Switcher for data source (xml, database)"
+     * )
      */
     public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
