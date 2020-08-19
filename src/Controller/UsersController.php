@@ -45,6 +45,8 @@ class UsersController extends AbstractController
     public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
 
+        $this->usersDataSourceFactory->setEntityManager($this->getDoctrine()->getManager());
+
         $userDto = new UserDto();
         $userDto->setLogin($request->request->get('login'));
         $userDto->setPassword($request->request->get('password'));
@@ -67,6 +69,9 @@ class UsersController extends AbstractController
             return new JsonResponse(['status' => JsonResponse::HTTP_BAD_REQUEST, 'errors' => $parsedErrors], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        return new JsonResponse(['status' => JsonResponse::HTTP_CREATED, 'data' => []], JsonResponse::HTTP_CREATED);
+        $dataManager = $this->usersDataSourceFactory->getDataManager();
+        $user = $dataManager->create($userDto);
+
+        return new JsonResponse(['status' => JsonResponse::HTTP_CREATED, 'data' => $user->toArray()], JsonResponse::HTTP_CREATED);
     }
 }

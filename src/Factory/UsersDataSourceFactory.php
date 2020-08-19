@@ -6,6 +6,7 @@ use App\DataManager\DatabaseManager;
 use App\DataManager\DataManagerInterface;
 use App\DataManager\XmlManager;
 use App\Repository\UsersRepository;
+use Doctrine\Persistence\ObjectManager;
 
 class UsersDataSourceFactory implements UsersDataSourceFactoryInterface
 {
@@ -15,9 +16,16 @@ class UsersDataSourceFactory implements UsersDataSourceFactoryInterface
 
     protected $usersRepository;
 
+    protected $entityManager;
+
     function __construct(UsersRepository $usersRepository)
     {
         $this->usersRepository = $usersRepository;
+    }
+
+    public function setEntityManager(ObjectManager $em)
+    {
+        $this->entityManager = $em;
     }
 
     public function getDataManager(string $dataSource = self::DATABASE): DataManagerInterface
@@ -29,10 +37,9 @@ class UsersDataSourceFactory implements UsersDataSourceFactoryInterface
                 break;
             case self::DATABASE:
             default:
-                return new DatabaseManager($this->usersRepository);
+                return new DatabaseManager($this->usersRepository, $this->entityManager);
                 break;
         }
-
     }
 }
 

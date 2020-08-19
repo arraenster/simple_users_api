@@ -159,7 +159,13 @@ class UserDto
 
     public function toArray(): array
     {
-        unset($this->password);
-        return (array) $this;
+        return [
+            'id' => $this->id,
+            'login' => $this->login,
+            'createdDate' => $this->createdDate,
+            'updatedDate' => $this->updatedDate,
+            'role' => $this->role,
+            'status' => $this->status,
+        ];
     }
 }
