@@ -6,6 +6,8 @@ use App\DTO\UserDto;
 use App\Entity\Users;
 use App\Factory\UsersDataSourceFactory;
 use App\Factory\UsersDataSourceFactoryInterface;
+use App\Service\UserServiceInterface;
+use App\Service\UsersService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +21,13 @@ class UsersController extends AbstractController
 {
 
     /**
-     * @var UsersDataSourceFactoryInterface
+     * @var UserServiceInterface
      */
-    protected $usersDataSourceFactory;
+    protected $userService;
 
-    function __construct(UsersDataSourceFactoryInterface $usersDataSourceFactory)
+    function __construct(UserServiceInterface $userService)
     {
-        $this->usersDataSourceFactory = $usersDataSourceFactory;
+        $this->userService = $userService;
     }
 
     /**
@@ -62,10 +64,9 @@ class UsersController extends AbstractController
 
         $dataSource = $request->query->get('source');
 
-        $dataManager = $this->usersDataSourceFactory->getDataManager($dataSource);
-        $response = $dataManager->getList($page);
-;
-        return new JsonResponse(['status' => JsonResponse::HTTP_OK, 'data' => $response], JsonResponse::HTTP_OK);
+        $response = $this->userService->getList($page, $dataSource);
+
+        return new JsonResponse(array_merge(['status' => JsonResponse::HTTP_OK], $response), JsonResponse::HTTP_OK);
     }
 
     /**
@@ -120,9 +121,8 @@ class UsersController extends AbstractController
             return new JsonResponse(['status' => JsonResponse::HTTP_BAD_REQUEST, 'errors' => $parsedErrors], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $dataManager = $this->usersDataSourceFactory->getDataManager($dataSource);
-        $user = $dataManager->create($userDto);
+        $response = $this->userService->createUser($userDto, $dataSource);
 
-        return new JsonResponse(['status' => JsonResponse::HTTP_CREATED, 'data' => $user->toArray()], JsonResponse::HTTP_CREATED);
+        return new JsonResponse(array_merge(['status' => JsonResponse::HTTP_CREATED], $response), JsonResponse::HTTP_CREATED);
     }
 }
